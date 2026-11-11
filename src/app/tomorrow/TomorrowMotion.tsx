@@ -51,11 +51,11 @@ export default function TomorrowMotion() {
             scrollTrigger: {
               trigger: experienceCanvas,
               start: "top top",
-              end: () => `+=${Math.round(window.innerHeight * (isMobile ? 6.25 : 7.5))}`,
+              end: () => `+=${Math.round(window.innerHeight * (isMobile ? 5.8 : 7.5))}`,
               pin: experienceCanvas,
               pinType: "transform",
               pinSpacing: true,
-              scrub: isMobile ? 0.12 : 0.18,
+              scrub: isMobile ? 0.08 : 0.18,
               anticipatePin: 1,
               invalidateOnRefresh: true,
           },
@@ -63,8 +63,8 @@ export default function TomorrowMotion() {
 
           timeline
             .to(experienceTitle, {
-              scale: isMobile ? 18 : 32,
-              duration: isMobile ? 1.1 : 1.3,
+              scale: isMobile ? 14 : 32,
+              duration: isMobile ? 0.95 : 1.3,
               ease: "power1.in",
               transformOrigin: "48% 54%",
             })
@@ -184,7 +184,147 @@ export default function TomorrowMotion() {
       };
 
       media.add("(min-width: 721px)", () => buildExperienceSequence(false));
-      media.add("(max-width: 720px)", () => buildExperienceSequence(true));
+      media.add("(max-width: 720px)", () => {
+        if (!experienceCanvas || !experienceOpening || !experienceTitle || !experiencePresentation || experienceStates.length !== 5) return;
+
+        const experienceSection = experienceCanvas.closest<HTMLElement>("section");
+        const controls = experienceCanvas.querySelector<HTMLElement>("[data-mobile-experience-controls]");
+        const exitButton = controls?.querySelector<HTMLButtonElement>("[data-experience-exit]");
+        const nextButton = controls?.querySelector<HTMLButtonElement>("[data-experience-next]");
+        const count = controls?.querySelector<HTMLElement>("[data-experience-count]");
+        if (!experienceSection || !controls || !exitButton || !nextButton || !count) return;
+
+        let activeIndex = 0;
+        let locked = false;
+        let complete = false;
+        let transition: gsap.core.Timeline | undefined;
+        const root = document.documentElement;
+        const body = document.body;
+        const previousRootOverflow = root.style.overflow;
+        const previousBodyOverflow = body.style.overflow;
+
+        const updateControls = () => {
+          count.textContent = `${String(activeIndex + 1).padStart(2, "0")} / 05`;
+          nextButton.querySelector("span")!.textContent = activeIndex === experienceStates.length - 1 ? "CONTINUE" : "NEXT EXPERIENCE";
+          nextButton.setAttribute("aria-label", activeIndex === experienceStates.length - 1 ? "Continue to the next page section" : `Show experience ${activeIndex + 2}`);
+          controls.dataset.current = String(activeIndex + 1).padStart(2, "0");
+        };
+
+        const enterPresentation = () => {
+          if (locked || complete) return;
+          locked = true;
+          activeIndex = 0;
+          lenis.stop();
+          root.style.overflow = "hidden";
+          body.style.overflow = "hidden";
+          experienceCanvas.classList.add(s.experienceMobileActive);
+          gsap.set(experiencePresentation, { autoAlpha: 0, scale: 0.035, borderRadius: "50%", transformOrigin: "50% 50%" });
+          gsap.set(experienceStates, { autoAlpha: 0, y: 16, scale: 0.99 });
+          gsap.set(experienceVisuals, { scale: 1.06 });
+          gsap.set(experienceTitle, { autoAlpha: 1, scale: 1, transformOrigin: "48% 54%" });
+          gsap.set(experienceOpening, { autoAlpha: 1 });
+          updateControls();
+          transition = gsap.timeline();
+          transition
+            .to(experienceTitle, { scale: 14, duration: 0.78, ease: "power2.in", transformOrigin: "48% 54%" })
+            .to(experienceAsides, { autoAlpha: 0, y: -8, duration: 0.25 }, "-=0.28")
+            .to(experiencePresentation, { autoAlpha: 1, scale: 1, borderRadius: "0%", duration: 0.72, ease: "power2.out" }, "-=0.25")
+            .to(experienceTitle, { autoAlpha: 0, duration: 0.05 }, "-=0.05")
+            .to(experienceOpening, { autoAlpha: 0, duration: 0.08 }, "-=0.04")
+            .fromTo(experienceStates[0], { autoAlpha: 0, y: 16, scale: 0.99 }, { autoAlpha: 1, y: 0, scale: 1, duration: 0.35, ease: "power2.out" }, "-=0.02")
+            .fromTo(experienceVisuals[0], { scale: 1.06 }, { scale: 1, duration: 0.55, ease: "power2.out" }, "<")
+            .fromTo(experienceNumbers[0], { autoAlpha: 0, y: 8 }, { autoAlpha: 1, y: 0, duration: 0.3 }, "<0.06")
+            .fromTo(experienceCopies[0], { autoAlpha: 0, y: 10 }, { autoAlpha: 1, y: 0, duration: 0.35 }, "<0.04");
+        };
+
+        const unlockPresentation = (continueForward: boolean) => {
+          if (!locked) return;
+          locked = false;
+          complete = continueForward;
+          transition?.kill();
+          experienceCanvas.classList.remove(s.experienceMobileActive);
+          root.style.overflow = previousRootOverflow;
+          body.style.overflow = previousBodyOverflow;
+          lenis.start();
+          const top = experienceSection.getBoundingClientRect().top + window.scrollY;
+          const target = continueForward
+            ? top + experienceSection.offsetHeight + 1
+            : Math.max(0, top - 2);
+          requestAnimationFrame(() => lenis.scrollTo(target, { immediate: true }));
+        };
+
+        const changeExperience = (direction: -1 | 1) => {
+          if (!locked || transition?.isActive()) return;
+          const nextIndex = activeIndex + direction;
+          if (nextIndex < 0) {
+            unlockPresentation(false);
+            return;
+          }
+          if (nextIndex >= experienceStates.length) {
+            unlockPresentation(true);
+            return;
+          }
+
+          nextButton.disabled = true;
+          exitButton.disabled = true;
+          const outgoing = experienceStates[activeIndex];
+          const incoming = experienceStates[nextIndex];
+          transition = gsap.timeline({
+            onComplete: () => {
+              activeIndex = nextIndex;
+              updateControls();
+              nextButton.disabled = false;
+              exitButton.disabled = false;
+            },
+          });
+          transition
+            .to(outgoing, { autoAlpha: 0, y: direction > 0 ? -10 : 10, scale: 0.99, duration: 0.22, ease: "power1.inOut" })
+            .fromTo(incoming, { autoAlpha: 0, y: direction > 0 ? 14 : -14, scale: 0.985 }, { autoAlpha: 1, y: 0, scale: 1, duration: 0.32, ease: "power2.out" }, "<0.08")
+            .fromTo(experienceVisuals[nextIndex], { scale: 1.055 }, { scale: 1, duration: 0.5, ease: "power2.out" }, "<")
+            .fromTo(experienceNumbers[nextIndex], { autoAlpha: 0, y: 9 }, { autoAlpha: 1, y: 0, duration: 0.28 }, "<0.04")
+            .fromTo(experienceCopies[nextIndex], { autoAlpha: 0, y: 10 }, { autoAlpha: 1, y: 0, duration: 0.32 }, "<0.03");
+        };
+
+        const onExit = () => changeExperience(-1);
+        const onNext = () => changeExperience(1);
+        const onKeyDown = (event: KeyboardEvent) => {
+          if (!locked) return;
+          if (event.key === "Escape") unlockPresentation(false);
+          if (event.key === "ArrowRight") changeExperience(1);
+          if (event.key === "ArrowLeft") changeExperience(-1);
+        };
+        exitButton.addEventListener("click", onExit);
+        nextButton.addEventListener("click", onNext);
+        window.addEventListener("keydown", onKeyDown);
+        experienceCanvas.classList.add(s.experienceEnhanced);
+        gsap.set(experiencePresentation, { autoAlpha: 0, scale: 0.035, borderRadius: "50%", transformOrigin: "50% 50%" });
+        gsap.set(experienceStates, { autoAlpha: 0 });
+        gsap.set(experienceCanvas, { clearProps: "transform" });
+
+        const entryTrigger = ScrollTrigger.create({
+          trigger: experienceCanvas,
+          start: "top top",
+          end: "bottom top",
+          onEnter: enterPresentation,
+          onEnterBack: () => {
+            if (!complete) enterPresentation();
+          },
+          onLeaveBack: () => {
+            complete = false;
+          },
+        });
+
+        return () => {
+          if (locked) unlockPresentation(false);
+          entryTrigger.kill();
+          transition?.kill();
+          exitButton.removeEventListener("click", onExit);
+          nextButton.removeEventListener("click", onNext);
+          window.removeEventListener("keydown", onKeyDown);
+          experienceCanvas.classList.remove(s.experienceEnhanced, s.experienceMobileActive);
+          gsap.set([experienceCanvas, experienceOpening, experienceTitle, experiencePresentation, ...experienceStates, ...experienceVisuals, ...experienceNumbers, ...experienceCopies], { clearProps: "all" });
+        };
+      });
 
       const intro = gsap.timeline({ defaults: { ease: "power4.out" } });
       intro

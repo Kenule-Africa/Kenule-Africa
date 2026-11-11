@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { UsersRound } from "lucide-react";
+import { ArrowLeft, ArrowRight, UsersRound } from "lucide-react";
 import s from "./tomorrow.module.css";
 
 const experiences = [
@@ -88,9 +88,9 @@ export default function TomorrowExperience() {
 
         <div className={s.experiencePresentation} data-experience-presentation>
           <div className={s.experiencePresentationTexture} aria-hidden="true" />
-          <p className={s.experiencePresentationEyebrow}>
+          {/* <p className={s.experiencePresentationEyebrow}>
             FIVE EXPERIENCES <span>·</span> ONE GATHERING
-          </p>
+          </p> */}
           {experiences.map((experience) => (
             <article
               className={s.experienceState}
@@ -148,6 +148,17 @@ export default function TomorrowExperience() {
             <span>THE EXPERIENCE</span>
             <span>SCROLL TO CONTINUE</span>
           </div>
+          <nav className={s.mobileExperienceControls} data-mobile-experience-controls aria-label="Experience presentation controls">
+            <button type="button" data-experience-exit>
+              <ArrowLeft size={16} aria-hidden="true" />
+              <span>BACK TO PAGE</span>
+            </button>
+            <span className={s.mobileExperienceCount} data-experience-count aria-live="polite">01 <i>/</i> 05</span>
+            <button type="button" data-experience-next>
+              <span>NEXT EXPERIENCE</span>
+              <ArrowRight size={16} aria-hidden="true" />
+            </button>
+          </nav>
         </div>
       </div>
     </section>
