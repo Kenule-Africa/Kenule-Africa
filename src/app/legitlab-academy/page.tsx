@@ -13,6 +13,7 @@ import {
 import AcademyHeader from "@/components/legitlab/AcademyHeader";
 import TrackVisual from "@/components/legitlab/TrackVisual";
 import { applicationUrl, contactUrl, faqs, tracks } from "@/data/legitlab";
+import "./academy.css";
 
 export const metadata: Metadata = {
   title: "LegitLab Academy",
@@ -423,7 +424,6 @@ export default function AcademyPage() {
         </div>
         <nav aria-label="Footer">
           <Link href="/">Back to Kenule Africa</Link>
-          <Link href="/tomorrow">TOMORROW Experience</Link>
           <Link href="/#community">Builders Circle</Link>
           <a href="mailto:admin@kenuleafrica.xyz">Get in touch</a>
         </nav>
