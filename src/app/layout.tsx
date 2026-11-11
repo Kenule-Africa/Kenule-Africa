@@ -1,33 +1,34 @@
 import type { Metadata, Viewport } from "next";
-import { Syne, Instrument_Serif, Inter, JetBrains_Mono } from "next/font/google";
+import localFont from "next/font/local";
 import BackToTop from "@/components/ui/BackToTop";
 import "./globals.css";
 
-const syne = Syne({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700", "800"],
+const syne = localFont({
+  src: "../../public/fonts/syne-latin.woff2",
+  weight: "400 800",
   variable: "--font-syne",
   display: "swap",
 });
 
-const instrumentSerif = Instrument_Serif({
-  subsets: ["latin"],
-  weight: ["400"],
-  style: ["normal", "italic"],
+const instrumentSerif = localFont({
+  src: [
+    { path: "../../public/fonts/instrument-serif-latin.woff2", style: "normal", weight: "400" },
+    { path: "../../public/fonts/instrument-serif-italic-latin.woff2", style: "italic", weight: "400" },
+  ],
   variable: "--font-serif",
   display: "swap",
 });
 
-const inter = Inter({
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700"],
+const inter = localFont({
+  src: "../../public/fonts/inter-latin.woff2",
+  weight: "300 700",
   variable: "--font-sans",
   display: "swap",
 });
 
-const jetbrainsMono = JetBrains_Mono({
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "600"],
+const jetbrainsMono = localFont({
+  src: "../../public/fonts/jetbrains-mono-latin.woff2",
+  weight: "300 600",
   variable: "--font-mono",
   display: "swap",
 });
