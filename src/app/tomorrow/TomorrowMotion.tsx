@@ -8,7 +8,12 @@ import s from "./tomorrow.module.css";
 export default function TomorrowMotion() {
   useLayoutEffect(() => {
     const page = document.querySelector<HTMLElement>("[data-tomorrow-page]");
-    if (!page || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if (!page) return;
+    const root = document.documentElement;
+    root.classList.add(s.tomorrowNoScrollbar);
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      return () => root.classList.remove(s.tomorrowNoScrollbar);
+    }
     const lenis = new Lenis({
       autoRaf: false,
       anchors: true,
@@ -198,10 +203,7 @@ export default function TomorrowMotion() {
         let locked = false;
         let complete = false;
         let transition: gsap.core.Timeline | undefined;
-        const root = document.documentElement;
-        const body = document.body;
-        const previousRootOverflow = root.style.overflow;
-        const previousBodyOverflow = body.style.overflow;
+        const blockPageScroll = (event: Event) => event.preventDefault();
 
         const updateControls = () => {
           count.textContent = `${String(activeIndex + 1).padStart(2, "0")} / 05`;
@@ -215,10 +217,10 @@ export default function TomorrowMotion() {
           locked = true;
           activeIndex = 0;
           lenis.stop();
-          root.style.overflow = "hidden";
-          body.style.overflow = "hidden";
+          window.addEventListener("wheel", blockPageScroll, { passive: false, capture: true });
+          window.addEventListener("touchmove", blockPageScroll, { passive: false, capture: true });
           experienceCanvas.classList.add(s.experienceMobileActive);
-          gsap.set(experiencePresentation, { autoAlpha: 0, scale: 0.035, borderRadius: "50%", transformOrigin: "50% 50%" });
+          gsap.set(experiencePresentation, { autoAlpha: 0, scale: 1.035, yPercent: 3, transformOrigin: "50% 50%" });
           gsap.set(experienceStates, { autoAlpha: 0, y: 16, scale: 0.99 });
           gsap.set(experienceVisuals, { scale: 1.06 });
           gsap.set(experienceTitle, { autoAlpha: 1, scale: 1, transformOrigin: "48% 54%" });
@@ -226,9 +228,9 @@ export default function TomorrowMotion() {
           updateControls();
           transition = gsap.timeline();
           transition
-            .to(experienceTitle, { scale: 14, duration: 0.78, ease: "power2.in", transformOrigin: "48% 54%" })
+            .to(experienceTitle, { scale: 18, duration: 0.82, ease: "power2.in", transformOrigin: "48% 54%" })
             .to(experienceAsides, { autoAlpha: 0, y: -8, duration: 0.25 }, "-=0.28")
-            .to(experiencePresentation, { autoAlpha: 1, scale: 1, borderRadius: "0%", duration: 0.72, ease: "power2.out" }, "-=0.25")
+            .to(experiencePresentation, { autoAlpha: 1, scale: 1, yPercent: 0, duration: 0.68, ease: "power2.out" }, "-=0.25")
             .to(experienceTitle, { autoAlpha: 0, duration: 0.05 }, "-=0.05")
             .to(experienceOpening, { autoAlpha: 0, duration: 0.08 }, "-=0.04")
             .fromTo(experienceStates[0], { autoAlpha: 0, y: 16, scale: 0.99 }, { autoAlpha: 1, y: 0, scale: 1, duration: 0.35, ease: "power2.out" }, "-=0.02")
@@ -243,8 +245,8 @@ export default function TomorrowMotion() {
           complete = continueForward;
           transition?.kill();
           experienceCanvas.classList.remove(s.experienceMobileActive);
-          root.style.overflow = previousRootOverflow;
-          body.style.overflow = previousBodyOverflow;
+          window.removeEventListener("wheel", blockPageScroll, true);
+          window.removeEventListener("touchmove", blockPageScroll, true);
           lenis.start();
           const top = experienceSection.getBoundingClientRect().top + window.scrollY;
           const target = continueForward
@@ -292,12 +294,15 @@ export default function TomorrowMotion() {
           if (event.key === "Escape") unlockPresentation(false);
           if (event.key === "ArrowRight") changeExperience(1);
           if (event.key === "ArrowLeft") changeExperience(-1);
+          if (["ArrowDown", "ArrowUp", "PageDown", "PageUp", "Home", "End"].includes(event.key) || (event.key === " " && !(event.target instanceof HTMLButtonElement))) {
+            event.preventDefault();
+          }
         };
         exitButton.addEventListener("click", onExit);
         nextButton.addEventListener("click", onNext);
         window.addEventListener("keydown", onKeyDown);
         experienceCanvas.classList.add(s.experienceEnhanced);
-        gsap.set(experiencePresentation, { autoAlpha: 0, scale: 0.035, borderRadius: "50%", transformOrigin: "50% 50%" });
+        gsap.set(experiencePresentation, { autoAlpha: 0, scale: 1.035, yPercent: 3, transformOrigin: "50% 50%" });
         gsap.set(experienceStates, { autoAlpha: 0 });
         gsap.set(experienceCanvas, { clearProps: "transform" });
 
@@ -316,6 +321,8 @@ export default function TomorrowMotion() {
 
         return () => {
           if (locked) unlockPresentation(false);
+          window.removeEventListener("wheel", blockPageScroll, true);
+          window.removeEventListener("touchmove", blockPageScroll, true);
           entryTrigger.kill();
           transition?.kill();
           exitButton.removeEventListener("click", onExit);
@@ -354,6 +361,39 @@ export default function TomorrowMotion() {
         });
       });
       media.add("(min-width: 721px)", () => {
+        const hero = page.querySelector<HTMLElement>("[data-tomorrow-hero]");
+        const heroVisual = hero?.querySelector<HTMLElement>("[data-hero-visual]");
+        let removePointerEffect = () => {};
+        if (hero && heroVisual && window.matchMedia("(pointer: fine)").matches) {
+          gsap.set(heroVisual, { transformPerspective: 1400, transformOrigin: "50% 50%", scale: 1.025, force3D: true });
+          const moveX = gsap.quickTo(heroVisual, "x", { duration: 0.85, ease: "power3.out" });
+          const moveY = gsap.quickTo(heroVisual, "y", { duration: 0.85, ease: "power3.out" });
+          const tiltX = gsap.quickTo(heroVisual, "rotationX", { duration: 0.85, ease: "power3.out" });
+          const tiltY = gsap.quickTo(heroVisual, "rotationY", { duration: 0.85, ease: "power3.out" });
+          const onPointerMove = (event: PointerEvent) => {
+            const bounds = hero.getBoundingClientRect();
+            const horizontal = (event.clientX - bounds.left) / bounds.width - 0.5;
+            const vertical = (event.clientY - bounds.top) / bounds.height - 0.5;
+            moveX(-horizontal * 10);
+            moveY(-vertical * 7);
+            tiltX(-vertical * 1.5);
+            tiltY(horizontal * 2.1);
+          };
+          const onPointerLeave = () => {
+            moveX(0);
+            moveY(0);
+            tiltX(0);
+            tiltY(0);
+          };
+          hero.addEventListener("pointermove", onPointerMove, { passive: true });
+          hero.addEventListener("pointerleave", onPointerLeave, { passive: true });
+          removePointerEffect = () => {
+            hero.removeEventListener("pointermove", onPointerMove);
+            hero.removeEventListener("pointerleave", onPointerLeave);
+            gsap.killTweensOf(heroVisual);
+            gsap.set(heroVisual, { clearProps: "transform" });
+          };
+        }
         gsap.to("[data-hero-parallax] img", {
           yPercent: 18, scale: 1.18, ease: "none",
           scrollTrigger: { trigger: "[data-tomorrow-hero]", start: "top top", end: "bottom top", scrub: 0.9 },
@@ -371,6 +411,7 @@ export default function TomorrowMotion() {
             scrollTrigger: { trigger: art.closest("[data-future-card]"), start: "top bottom", end: "bottom top", scrub: 0.8 },
           });
         });
+        return removePointerEffect;
       });
       media.add("(max-width: 720px)", () => {
         gsap.to("[data-hero-parallax] img", {
@@ -392,6 +433,7 @@ export default function TomorrowMotion() {
       gsap.ticker.remove(syncLenisWithGsap);
       gsap.ticker.lagSmoothing(500, 33);
       lenis.destroy();
+      root.classList.remove(s.tomorrowNoScrollbar);
     };
   }, []);
   return null;

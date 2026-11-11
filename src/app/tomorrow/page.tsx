@@ -23,7 +23,7 @@ export const metadata: Metadata = {
     siteName: "Kenule Africa",
     images: [
       {
-        url: "/assets/tomorrow/hero-section-bg.png",
+        url: "https://kenuleafrica.xyz/assets/tomorrow/hero-section-bg.png",
         width: 1672,
         height: 941,
         alt: "A luminous horizon over Africa",
@@ -35,7 +35,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "TOMORROW | A Kenule Africa Experience",
     description: "Tomorrow begins with the people you meet today.",
-    images: ["/assets/tomorrow/hero-section-bg.png"],
+    images: ["https://kenuleafrica.xyz/assets/tomorrow/hero-section-bg.png"],
   },
 };
 const audience = [
