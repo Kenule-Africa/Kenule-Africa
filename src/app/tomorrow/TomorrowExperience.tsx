@@ -88,9 +88,9 @@ export default function TomorrowExperience() {
 
         <div className={s.experiencePresentation} data-experience-presentation>
           <div className={s.experiencePresentationTexture} aria-hidden="true" />
-          {/* <p className={s.experiencePresentationEyebrow}>
+          <p className={s.mobileExperienceEyebrow}>
             FIVE EXPERIENCES <span>·</span> ONE GATHERING
-          </p> */}
+          </p>
           {experiences.map((experience) => (
             <article
               className={s.experienceState}
@@ -151,7 +151,7 @@ export default function TomorrowExperience() {
           <nav className={s.mobileExperienceControls} data-mobile-experience-controls aria-label="Experience presentation controls">
             <button type="button" data-experience-exit>
               <ArrowLeft size={16} aria-hidden="true" />
-              <span>BACK TO PAGE</span>
+              <span>PREVIOUS</span>
             </button>
             <span className={s.mobileExperienceCount} data-experience-count aria-live="polite">01 <i>/</i> 05</span>
             <button type="button" data-experience-next>

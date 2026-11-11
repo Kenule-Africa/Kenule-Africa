@@ -207,6 +207,8 @@ export default function TomorrowMotion() {
 
         const updateControls = () => {
           count.textContent = `${String(activeIndex + 1).padStart(2, "0")} / 05`;
+          exitButton.disabled = activeIndex === 0;
+          exitButton.setAttribute("aria-label", activeIndex === 0 ? "No previous experience" : `Show experience ${activeIndex}`);
           nextButton.querySelector("span")!.textContent = activeIndex === experienceStates.length - 1 ? "CONTINUE" : "NEXT EXPERIENCE";
           nextButton.setAttribute("aria-label", activeIndex === experienceStates.length - 1 ? "Continue to the next page section" : `Show experience ${activeIndex + 2}`);
           controls.dataset.current = String(activeIndex + 1).padStart(2, "0");
@@ -258,10 +260,7 @@ export default function TomorrowMotion() {
         const changeExperience = (direction: -1 | 1) => {
           if (!locked || transition?.isActive()) return;
           const nextIndex = activeIndex + direction;
-          if (nextIndex < 0) {
-            unlockPresentation(false);
-            return;
-          }
+          if (nextIndex < 0) return;
           if (nextIndex >= experienceStates.length) {
             unlockPresentation(true);
             return;
@@ -276,7 +275,6 @@ export default function TomorrowMotion() {
               activeIndex = nextIndex;
               updateControls();
               nextButton.disabled = false;
-              exitButton.disabled = false;
             },
           });
           transition
@@ -291,10 +289,9 @@ export default function TomorrowMotion() {
         const onNext = () => changeExperience(1);
         const onKeyDown = (event: KeyboardEvent) => {
           if (!locked) return;
-          if (event.key === "Escape") unlockPresentation(false);
           if (event.key === "ArrowRight") changeExperience(1);
           if (event.key === "ArrowLeft") changeExperience(-1);
-          if (["ArrowDown", "ArrowUp", "PageDown", "PageUp", "Home", "End"].includes(event.key) || (event.key === " " && !(event.target instanceof HTMLButtonElement))) {
+          if (["Escape", "ArrowDown", "ArrowUp", "PageDown", "PageUp", "Home", "End"].includes(event.key) || (event.key === " " && !(event.target instanceof HTMLButtonElement))) {
             event.preventDefault();
           }
         };
