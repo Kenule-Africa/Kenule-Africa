@@ -1,13 +1,16 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, Menu, X } from "lucide-react";
+import { ArrowRight, ChevronDown, Menu, X } from "lucide-react";
 
 export default function OraviaHeader() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isExploreOpen, setIsExploreOpen] = useState(false);
+  const exploreMenu = useRef<HTMLDivElement>(null);
+  const exploreTrigger = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -16,6 +19,27 @@ export default function OraviaHeader() {
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  useEffect(() => {
+    if (!isExploreOpen) return;
+    const closeOnOutsideClick = (event: PointerEvent) => {
+      if (!exploreMenu.current?.contains(event.target as Node)) {
+        setIsExploreOpen(false);
+      }
+    };
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setIsExploreOpen(false);
+        exploreTrigger.current?.focus();
+      }
+    };
+    document.addEventListener("pointerdown", closeOnOutsideClick);
+    window.addEventListener("keydown", closeOnEscape);
+    return () => {
+      document.removeEventListener("pointerdown", closeOnOutsideClick);
+      window.removeEventListener("keydown", closeOnEscape);
+    };
+  }, [isExploreOpen]);
 
   // Prevent background scroll when mobile menu is open
   useEffect(() => {
@@ -59,29 +83,70 @@ export default function OraviaHeader() {
           {/* Desktop Navigation Links */}
           <nav className="hidden xl:flex items-center gap-6">
             <Link href="/legitlab-academy" className="text-xs font-medium text-[#666666] hover:text-[#111111]">LegitLab Academy</Link>
-            <a
-              href="#about"
-              className="font-sans text-xs font-medium text-[#666666] hover:text-[#111111] transition-colors"
+            <Link href="/tomorrow" className="text-xs font-medium text-[#666666] transition-colors hover:text-[#111111]">Tomorrow</Link>
+            <div
+              ref={exploreMenu}
+              className="relative"
+              onMouseEnter={() => setIsExploreOpen(true)}
+              onMouseLeave={() => setIsExploreOpen(false)}
+              onBlur={(event) => {
+                if (!event.currentTarget.contains(event.relatedTarget as Node)) {
+                  setIsExploreOpen(false);
+                }
+              }}
             >
-              Our Story
-            </a>
-            <a
-              href="#ventures"
-              className="font-sans text-xs font-medium text-[#666666] hover:text-[#111111] transition-colors"
-            >
-              Ventures
-            </a>
+              <button
+                ref={exploreTrigger}
+                type="button"
+                aria-expanded={isExploreOpen}
+                aria-haspopup="true"
+                onClick={() => setIsExploreOpen((open) => !open)}
+                onFocus={() => setIsExploreOpen(true)}
+                className="inline-flex items-center gap-1 font-sans text-xs font-medium text-[#666666] hover:text-[#111111] transition-colors"
+              >
+                Explore
+                <ChevronDown className={`h-3.5 w-3.5 transition-transform duration-200 ${isExploreOpen ? "rotate-180" : ""}`} />
+              </button>
+              {isExploreOpen && (
+                <div className="absolute left-1/2 top-full z-50 w-56 -translate-x-1/2 pt-3">
+                  <div className="overflow-hidden rounded-xl border border-[#e9e9e9] bg-white p-2 shadow-[0_18px_50px_-18px_rgba(0,0,0,0.28)]">
+                    <a
+                      href="#about"
+                      onClick={() => setIsExploreOpen(false)}
+                      className="block rounded-lg px-3 py-3 text-xs font-medium text-[#666666] transition-colors hover:bg-[#f4f4f2] hover:text-[#111111]"
+                    >
+                      Our Story
+                    </a>
+                    <a
+                      href="#ventures"
+                      onClick={() => setIsExploreOpen(false)}
+                      className="block rounded-lg px-3 py-3 text-xs font-medium text-[#666666] transition-colors hover:bg-[#f4f4f2] hover:text-[#111111]"
+                    >
+                      Ventures
+                    </a>
+                    <a
+                      href="#lifecycle"
+                      onClick={() => setIsExploreOpen(false)}
+                      className="block rounded-lg px-3 py-3 text-xs font-medium text-[#666666] transition-colors hover:bg-[#f4f4f2] hover:text-[#111111]"
+                    >
+                      Methodology
+                    </a>
+                    <a
+                      href="#community"
+                      onClick={() => setIsExploreOpen(false)}
+                      className="block rounded-lg px-3 py-3 text-xs font-medium text-[#666666] transition-colors hover:bg-[#f4f4f2] hover:text-[#111111]"
+                    >
+                      Community
+                    </a>
+                  </div>
+                </div>
+              )}
+            </div>
             <a
               href="#community"
               className="font-sans text-xs font-medium text-[#666666] hover:text-[#111111] transition-colors"
             >
               Community
-            </a>
-            <a
-              href="#lifecycle"
-              className="font-sans text-xs font-medium text-[#666666] hover:text-[#111111] transition-colors"
-            >
-              Methodology
             </a>
             <a
               href="#contact"
@@ -120,44 +185,39 @@ export default function OraviaHeader() {
       {isMobileMenuOpen && (
         <div className="fixed inset-0 z-40 bg-[#FAFAFA]/98 backdrop-blur-2xl xl:hidden flex flex-col justify-between p-6 pt-24 pb-8 animate-in fade-in duration-200">
           <div className="flex flex-col gap-1 text-base font-medium text-[#111111] divide-y divide-[#EAEAEA]/80">
-            <a
-              href="#about"
-              onClick={() => setIsMobileMenuOpen(false)}
-              className="py-3.5 px-2 flex items-center justify-between text-[#111111] hover:text-black font-semibold text-lg"
-            >
-              <span>Our Story</span>
-              <ArrowRight className="w-4 h-4 text-[#888888]" />
-            </a>
-            <a
-              href="#ventures"
-              onClick={() => setIsMobileMenuOpen(false)}
-              className="py-3.5 px-2 flex items-center justify-between text-[#111111] hover:text-black font-semibold text-lg"
-            >
-              <span>Ventures</span>
-              <ArrowRight className="w-4 h-4 text-[#888888]" />
-            </a>
-            <a
-              href="#community"
-              onClick={() => setIsMobileMenuOpen(false)}
-              className="py-3.5 px-2 flex items-center justify-between text-[#111111] hover:text-black font-semibold text-lg"
-            >
-              <span>Builders Circle</span>
-              <ArrowRight className="w-4 h-4 text-[#888888]" />
-            </a>
-            <a
-              href="#lifecycle"
-              onClick={() => setIsMobileMenuOpen(false)}
-              className="py-3.5 px-2 flex items-center justify-between text-[#111111] hover:text-black font-semibold text-lg"
-            >
-              <span>Methodology</span>
-              <ArrowRight className="w-4 h-4 text-[#888888]" />
-            </a>
+            <div className="border-b border-[#EAEAEA]/80">
+              <button
+                type="button"
+                aria-expanded={isExploreOpen}
+                onClick={() => setIsExploreOpen((open) => !open)}
+                className="w-full py-3.5 px-2 flex items-center justify-between text-[#111111] hover:text-black font-semibold text-lg"
+              >
+                <span>Explore</span>
+                <ChevronDown className={`w-4 h-4 text-[#888888] transition-transform ${isExploreOpen ? "rotate-180" : ""}`} />
+              </button>
+              {isExploreOpen && (
+                <div className="grid gap-1 pb-3 pl-4">
+                  <a href="#about" onClick={() => { setIsMobileMenuOpen(false); setIsExploreOpen(false); }} className="py-2 text-lg font-semibold text-[#111111]">Our Story</a>
+                  <a href="#ventures" onClick={() => { setIsMobileMenuOpen(false); setIsExploreOpen(false); }} className="py-2 text-lg font-semibold text-[#111111]">Ventures</a>
+                  <a href="#lifecycle" onClick={() => { setIsMobileMenuOpen(false); setIsExploreOpen(false); }} className="py-2 text-lg font-semibold text-[#111111]">Methodology</a>
+                  <a href="#community" onClick={() => { setIsMobileMenuOpen(false); setIsExploreOpen(false); }} className="py-2 text-lg font-semibold text-[#111111]">Community</a>
+                </div>
+              )}
+            </div>
             <a
               href="/legitlab-academy"
               onClick={() => setIsMobileMenuOpen(false)}
               className="py-3.5 px-2 flex items-center justify-between text-[#111111] hover:text-black font-semibold text-lg"
             >
               <span>LegitLab</span>
+              <ArrowRight className="w-4 h-4 text-[#888888]" />
+            </a>
+            <a
+              href="/tomorrow"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="py-3.5 px-2 flex items-center justify-between text-[#111111] hover:text-black font-semibold text-lg"
+            >
+              <span>Tomorrow</span>
               <ArrowRight className="w-4 h-4 text-[#888888]" />
             </a>
             <a

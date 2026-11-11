@@ -1,4 +1,4 @@
-export const applicationUrl = "https://forms.gle/PzbnPTfnHMCd79uj8";
+﻿export const applicationUrl = "https://forms.gle/PzbnPTfnHMCd79uj8";
 export const contactUrl = "https://wa.me/2349019672049";
 export const tracks = [
 { id: "design", number: "01", category: "Design experiences", title: "UI/UX & Product Design", tagline: "Good ideas deserve great experiences.", description: "Understand people, shape intuitive interfaces, and bring digital products to life.", topics: ["User research & wireframing", "Figma & design systems", "Prototyping & usability testing"], project: "A product prototype and a case study explaining your design decisions.", tools: "Figma / Research / Prototyping" },
@@ -9,7 +9,7 @@ export const tracks = [
 ] as const;
 export type TrackId = (typeof tracks)[number]["id"];
 export const faqs = [
-["Is tuition free?", "LegitLab’s program offering is tuition-free. Contact the team about equipment, connectivity, and other practical requirements for your cohort."],
+["Is tuition free?", "LegitLab's program offering is tuition-free. Contact the team about equipment, connectivity, and other practical requirements for your cohort."],
 ["Which track should I choose?", "Start with the work you enjoy: designing, building websites, growing audiences, creating videos, or understanding blockchain. Explore the topics above and ask the team if you need help deciding."],
 ["When does the next cohort start?", "Contact the team for current cohort dates, weekly schedules, delivery format, and location details before making arrangements."],
 ["Do I need experience or a laptop?", "Requirements can depend on the track and cohort. Ask about your current skill level, device access, and available study time when applying."],

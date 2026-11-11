@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Syne, Instrument_Serif, Inter, JetBrains_Mono } from "next/font/google";
+import BackToTop from "@/components/ui/BackToTop";
 import "./globals.css";
 
 const syne = Syne({
@@ -168,6 +169,7 @@ export default function RootLayout({
         suppressHydrationWarning
       >
         {children}
+        <BackToTop />
       </body>
     </html>
   );
