@@ -74,7 +74,6 @@ function Eyebrow({ children }: { children: React.ReactNode }) {
 }
 
 export default function TomorrowPage() {
-  const url = process.env.NEXT_PUBLIC_TOMORROW_WAITLIST_URL?.trim();
   const mobileHero = getImageProps({
     src: "/assets/tomorrow/mobile-hero-bg.png",
     alt: "A sunrise over Africa beneath a star-filled sky",
@@ -264,7 +263,7 @@ export default function TomorrowPage() {
           </h2>
           <p data-reveal>It begins with the people you meet today.</p>
           <span id="closing-waitlist" data-reveal>
-            <Cta href={url} label="Join the waitlist" />
+            <Cta label="Join the waitlist" />
           </span>
         </section>
       </main>

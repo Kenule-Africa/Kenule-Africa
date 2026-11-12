@@ -6,14 +6,21 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "db:check": "node --env-file=.env backend/scripts/check-supabase.mjs",
+    "db:key-check": "node --env-file=.env backend/scripts/check-supabase-key.mjs",
+    "db:inspect": "node --env-file=.env backend/scripts/inspect-db.mjs",
+    "admin:seed": "node --env-file=.env backend/scripts/seed-admin.mjs"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.119.0",
+    "bcryptjs": "^3.0.3",
     "clsx": "^2.1.1",
     "gsap": "^3.12.7",
     "lenis": "^1.3.27",
     "lucide-react": "^0.475.0",
-    "next": "15.5.25",
+    "next": "15.5.29",
+    "pg": "^8.23.1",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
     "tailwind-merge": "^3.0.2",
@@ -27,11 +34,16 @@
     "@types/react-dom": "^19",
     "@types/three": "^0.174.0",
     "eslint": "^9",
-    "eslint-config-next": "15.5.25",
+    "eslint-config-next": "15.5.29",
     "tailwindcss": "^4",
     "typescript": "^5"
   },
   "allowScripts": {
     "unrs-resolver@1.12.2": true
+  },
+  "overrides": {
+    "next": {
+      "postcss": "8.5.23"
+    }
   }
 }
