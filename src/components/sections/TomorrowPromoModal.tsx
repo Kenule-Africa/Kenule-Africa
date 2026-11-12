@@ -60,7 +60,6 @@ export default function TomorrowPromoModal() {
             Remind me later
           </button>
         </div>
-        <span className={styles.index} aria-hidden="true">01 / INVITATION</span>
       </div>
     </dialog>
   );
