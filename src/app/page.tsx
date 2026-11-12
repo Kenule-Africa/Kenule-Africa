@@ -5,6 +5,7 @@ import OraviaLifecycleSection from "@/components/sections/OraviaLifecycleSection
 import OraviaBentoFeatures from "@/components/sections/OraviaBentoFeatures";
 import LegitLabIntro from "@/components/sections/LegitLabIntro";
 import OraviaTestimonialsSection from "@/components/sections/OraviaTestimonialsSection";
+import OraviaPartnersSection from "@/components/sections/OraviaPartnersSection";
 import OraviaVenturesSection from "@/components/sections/OraviaVenturesSection";
 import OraviaCommunitySection from "@/components/sections/OraviaCommunitySection";
 import OraviaContactSection from "@/components/sections/OraviaContactSection";
@@ -27,6 +28,7 @@ export default function Home() {
         <OraviaBentoFeatures />
         <LegitLabIntro />
         <OraviaTestimonialsSection />
+        <OraviaPartnersSection />
         <OraviaVenturesSection />
         <OraviaCommunitySection />
         <OraviaContactSection />

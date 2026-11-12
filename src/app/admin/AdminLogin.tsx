@@ -47,7 +47,7 @@ export default function AdminLogin() {
         </Link>
         <p className={s.visualOverline}>PRIVATE ADMINISTRATION</p>
         <div className={s.visualTitle} aria-hidden="true"><span>Tomorrow</span><em>starts here.</em></div>
-        <div className={s.visualBottom}><span>PORT HARCOURT, NIGERIA</span><span>01 / 01</span></div>
+        <div className={s.visualBottom}><span>PORT HARCOURT, NIGERIA</span></div>
       </aside>
 
       <div className={s.loginPanel}>

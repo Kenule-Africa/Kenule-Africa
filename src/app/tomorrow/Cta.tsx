@@ -63,7 +63,10 @@ export default function Cta({ label, prominent = false }: { label: string; promi
 
   return (
     <>
-      <button type="button" className={cls} onClick={openDialog}>{label}<ArrowUpRight size={16} aria-hidden="true" /></button>
+      <button type="button" className={cls} onClick={openDialog}>
+        <span>{label}</span>
+        <span className={s.ctaIcon}><ArrowUpRight size={16} aria-hidden="true" /></span>
+      </button>
       <dialog
         ref={dialog}
         className={s.waitlistDialog}

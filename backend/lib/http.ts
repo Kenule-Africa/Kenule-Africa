@@ -18,8 +18,19 @@ export function hasSameOrigin(request: Request) {
   const origin = request.headers.get("origin");
   if (!origin) return false;
   try {
-    const expectedOrigin = process.env.APP_ORIGIN?.trim() || new URL(request.url).origin;
-    return new URL(origin).origin === new URL(expectedOrigin).origin;
+    const normalizeOrigin = (value: string) => {
+      const parsed = new URL(value);
+      // Treat the site's www and apex domains as the same canonical origin.
+      parsed.hostname = parsed.hostname.replace(/^www\./i, "");
+      return parsed.origin;
+    };
+    const requestOrigin = new URL(request.url).origin;
+    const configuredOrigins = (process.env.APP_ORIGIN ?? "")
+      .split(",")
+      .map((value) => value.trim())
+      .filter(Boolean);
+    const allowedOrigins = [requestOrigin, ...configuredOrigins].map(normalizeOrigin);
+    return allowedOrigins.includes(normalizeOrigin(origin));
   } catch {
     return false;
   }
