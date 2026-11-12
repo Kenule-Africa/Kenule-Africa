@@ -10,6 +10,7 @@ import OraviaVenturesSection from "@/components/sections/OraviaVenturesSection";
 import OraviaCommunitySection from "@/components/sections/OraviaCommunitySection";
 import OraviaContactSection from "@/components/sections/OraviaContactSection";
 import OraviaFooter from "@/components/sections/OraviaFooter";
+import TomorrowPromoModal from "@/components/sections/TomorrowPromoModal";
 
 export default function Home() {
   return (
@@ -20,6 +21,7 @@ export default function Home() {
 
       {/* Global Navigation */}
       <OraviaHeader />
+      <TomorrowPromoModal />
 
       {/* Content Wrapper */}
       <div className="z-10 flex flex-col w-full relative">
