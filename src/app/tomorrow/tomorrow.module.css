@@ -407,6 +407,33 @@
 @keyframes waitlistSpin{to{transform:rotate(360deg)}}
 @media(max-width:520px){.waitlistDialogPanel{padding:42px 24px 30px}.waitlistDialogClose{top:11px;right:11px;width:32px;height:32px}.waitlistDialogPanel h2{font-size:clamp(39px,11vw,54px)}}
 @media(prefers-reduced-motion:reduce){.waitlistSpinner{animation:none}}
+/* Centered, concise waitlist dialog and a small celebratory success moment. */
+.waitlistDialog{position:fixed;inset:0;width:min(500px,calc(100vw - 32px));max-width:none;height:max-content;max-height:calc(100svh - 32px);margin:auto;padding:0;overflow:auto;border:1px solid #8b9195;background:#eef0f0;color:#181b1e;box-shadow:0 32px 110px #0009}
+.waitlistDialog[open]{display:block}
+.waitlistDialog::backdrop{background:#050607db;backdrop-filter:blur(9px)}
+.waitlistDialogPanel{position:relative;display:flex;flex-direction:column;align-items:center;padding:clamp(34px,7vw,60px) clamp(24px,7vw,58px);text-align:center}
+.waitlistDialogClose{top:16px;right:16px}
+.waitlistDialogPanel>.eyebrow{margin:0;color:#626a6f;font:8px var(--font-mono),monospace;letter-spacing:.2em}
+.waitlistDialogPanel h2{margin:26px 0 14px;font-size:clamp(42px,8vw,64px);line-height:.92;letter-spacing:-.075em}
+.waitlistDialogPanel h2 em{color:#70777b}
+.waitlistDialogIntro{max-width:300px;margin:0 auto 27px;color:#687075;font-size:12px;line-height:1.65}
+.waitlistDialogForm{display:grid;width:100%;gap:10px;margin:0;text-align:left}
+.waitlistDialogForm>label{margin:0;color:#555d62;font:600 8px var(--font-mono),monospace;letter-spacing:.14em}
+.waitlistDialogForm>input{height:51px;background:#fafbfb;font-size:13px}
+.waitlistDialogSubmit{min-height:52px;margin-top:5px}
+.waitlistDialogError{text-align:left}
+.waitlistDialogResult{width:100%;margin:4px 0 0;text-align:left}
+.waitlistCelebration{display:flex;flex-direction:column;align-items:center;gap:12px;margin-top:9px;color:#353c40}
+.waitlistCelebrationIcon{position:relative;display:grid;place-items:center;width:64px;height:64px;border:1px solid #aeb5b8;border-radius:50%;background:#e2e5e5;color:#272d31;animation:waitlist-celebrate-pop .6s cubic-bezier(.2,.9,.25,1.25) both}
+.waitlistCelebrationIcon:before,.waitlistCelebrationIcon:after{position:absolute;content:"";width:7px;height:7px;background:#737b80;clip-path:polygon(50% 0,62% 37%,100% 50%,62% 63%,50% 100%,38% 63%,0 50%,38% 37%);animation:waitlist-sparkle 1.3s ease-in-out infinite alternate}
+.waitlistCelebrationIcon:before{top:-9px;right:-11px}
+.waitlistCelebrationIcon:after{bottom:-5px;left:-13px;width:5px;height:5px;animation-delay:.25s}
+.waitlistCelebrationCheck{position:absolute;right:-3px;bottom:-2px;padding:3px;border-radius:50%;background:#252b2f;color:#f5f6f6}
+.waitlistCelebration p{margin:0;color:#687075;font-size:12px;line-height:1.6}
+@keyframes waitlist-celebrate-pop{0%{opacity:0;transform:scale(.55) rotate(-12deg)}70%{opacity:1;transform:scale(1.1) rotate(4deg)}100%{transform:scale(1) rotate(0)}}
+@keyframes waitlist-sparkle{from{opacity:.3;transform:scale(.65) rotate(0)}to{opacity:1;transform:scale(1.2) rotate(45deg)}}
+@media(max-width:520px){.waitlistDialog{width:min(440px,calc(100vw - 28px));max-height:calc(100svh - 28px)}.waitlistDialogPanel{padding:46px 24px 30px}.waitlistDialogPanel h2{margin-top:22px;font-size:clamp(40px,10vw,54px)}.waitlistDialogIntro{margin-bottom:22px}}
+@media(prefers-reduced-motion:reduce){.waitlistCelebrationIcon,.waitlistCelebrationIcon:before,.waitlistCelebrationIcon:after{animation:none}}
 @media(max-width:900px){
  .experienceState{grid-template-columns:minmax(80px,.58fr) minmax(0,1.45fr) minmax(215px,.9fr);gap:22px;padding-inline:5vw}
  .experienceNumber strong{font-size:clamp(82px,13vw,150px)}
