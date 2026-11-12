@@ -21,21 +21,20 @@ export const metadata: Metadata = {
     description: "Tomorrow begins with the people you meet today.",
     url: "https://kenuleafrica.xyz/tomorrow",
     siteName: "Kenule Africa",
-    images: [
-      {
-        url: "https://kenuleafrica.xyz/assets/tomorrow/hero-section-bg.png",
-        width: 1672,
-        height: 941,
-        alt: "A luminous horizon over Africa",
-      },
-    ],
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
     title: "TOMORROW | A Kenule Africa Experience",
     description: "Tomorrow begins with the people you meet today.",
-    images: ["https://kenuleafrica.xyz/assets/tomorrow/hero-section-bg.png"],
+    images: [
+      {
+        url: "/tomorrow/opengraph-image.png",
+        width: 1672,
+        height: 941,
+        alt: "A luminous horizon over Africa",
+      },
+    ],
   },
 };
 const audience = [
