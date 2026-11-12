@@ -27,6 +27,38 @@ export default function TomorrowMotion() {
     gsap.ticker.lagSmoothing(0);
     gsap.registerPlugin(ScrollTrigger);
     const media = gsap.matchMedia(page);
+    const experienceLockKey = "tomorrow-experience-scroll-state";
+    const experienceEntryKey = "tomorrow-experience-entry-state";
+    const saveExperienceState = (lockState: string, entryState: string) => {
+      try {
+        window.localStorage.setItem(experienceLockKey, lockState);
+        window.localStorage.setItem(experienceEntryKey, entryState);
+      } catch {
+        // Keep the interaction functional when browser storage is unavailable.
+      }
+    };
+    const clearExperienceState = () => {
+      try {
+        window.localStorage.removeItem(experienceLockKey);
+        window.localStorage.removeItem(experienceEntryKey);
+      } catch {
+        // Keep the interaction functional when browser storage is unavailable.
+      }
+    };
+    let releaseMobileExperienceForTop: (() => void) | null = null;
+    const handleBackToTop = (event: Event) => {
+      event.preventDefault();
+      window.history.replaceState(
+        window.history.state,
+        "",
+        `${window.location.pathname}${window.location.search}`,
+      );
+      saveExperienceState("returning-to-top", "opening");
+      releaseMobileExperienceForTop?.();
+      lenis.start();
+      lenis.scrollTo(0, { duration: 1.25, easing: (value) => Math.min(1, 1.001 - 2 ** (-10 * value)) });
+    };
+    window.addEventListener("tomorrow:back-to-top", handleBackToTop);
 
     const context = gsap.context(() => {
       const experienceCanvas = page.querySelector<HTMLElement>("[data-experience-canvas]");
@@ -202,6 +234,12 @@ export default function TomorrowMotion() {
         let activeIndex = 0;
         let locked = false;
         let complete = false;
+        let returningToTop = false;
+        try {
+          returningToTop = window.localStorage.getItem(experienceLockKey) === "returning-to-top";
+        } catch {
+          returningToTop = false;
+        }
         let transition: gsap.core.Timeline | undefined;
         const blockPageScroll = (event: Event) => event.preventDefault();
 
@@ -214,9 +252,25 @@ export default function TomorrowMotion() {
           controls.dataset.current = String(activeIndex + 1).padStart(2, "0");
         };
 
+        const resetPresentation = () => {
+          activeIndex = 0;
+          transition?.kill();
+          gsap.set(experiencePresentation, { autoAlpha: 0, scale: 1.035, yPercent: 3, transformOrigin: "50% 50%" });
+          gsap.set(experienceOpening, { autoAlpha: 1 });
+          gsap.set(experienceTitle, { clearProps: "scale,transformOrigin", autoAlpha: 1 });
+          gsap.set(experienceAsides, { autoAlpha: 1, clearProps: "y" });
+          gsap.set(experienceStates, { autoAlpha: 0, y: 16, scale: 0.99 });
+          gsap.set(experienceVisuals, { scale: 1.06, clearProps: "xPercent" });
+          gsap.set([...experienceNumbers, ...experienceCopies], { autoAlpha: 0, clearProps: "x,y" });
+          updateControls();
+        };
+
         const enterPresentation = () => {
           if (locked || complete) return;
+          returningToTop = false;
+          clearExperienceState();
           locked = true;
+          saveExperienceState("locked", "active");
           activeIndex = 0;
           lenis.stop();
           window.addEventListener("wheel", blockPageScroll, { passive: false, capture: true });
@@ -241,20 +295,45 @@ export default function TomorrowMotion() {
             .fromTo(experienceCopies[0], { autoAlpha: 0, y: 10 }, { autoAlpha: 1, y: 0, duration: 0.35 }, "<0.04");
         };
 
-        const unlockPresentation = (continueForward: boolean) => {
+        const unlockPresentation = (continueForward: boolean, preserveScrollPosition = false) => {
           if (!locked) return;
           locked = false;
           complete = continueForward;
+          saveExperienceState(
+            preserveScrollPosition && returningToTop ? "returning-to-top" : "released",
+            continueForward ? "completed" : "opening",
+          );
           transition?.kill();
           experienceCanvas.classList.remove(s.experienceMobileActive);
           window.removeEventListener("wheel", blockPageScroll, true);
           window.removeEventListener("touchmove", blockPageScroll, true);
           lenis.start();
           const top = experienceSection.getBoundingClientRect().top + window.scrollY;
-          const target = continueForward
-            ? top + experienceSection.offsetHeight + 1
-            : Math.max(0, top - 2);
-          requestAnimationFrame(() => lenis.scrollTo(target, { immediate: true }));
+          if (!preserveScrollPosition) {
+            const target = continueForward
+              ? top + experienceSection.offsetHeight + 1
+              : Math.max(0, top - 2);
+            requestAnimationFrame(() => lenis.scrollTo(target, { immediate: true }));
+          }
+        };
+
+        releaseMobileExperienceForTop = () => {
+          returningToTop = true;
+          if (locked) unlockPresentation(false, true);
+          complete = false;
+          saveExperienceState("returning-to-top", "opening");
+          resetPresentation();
+        };
+
+        const releaseWhenReturningAboveSection = () => {
+          if (!locked) return;
+          const sectionTop = experienceSection.getBoundingClientRect().top + window.scrollY;
+          if (window.scrollY >= sectionTop - 8) return;
+          returningToTop = true;
+          saveExperienceState("returning-to-top", "opening");
+          unlockPresentation(false, true);
+          complete = false;
+          resetPresentation();
         };
 
         const changeExperience = (direction: -1 | 1) => {
@@ -298,6 +377,7 @@ export default function TomorrowMotion() {
         exitButton.addEventListener("click", onExit);
         nextButton.addEventListener("click", onNext);
         window.addEventListener("keydown", onKeyDown);
+        window.addEventListener("scroll", releaseWhenReturningAboveSection, { passive: true });
         experienceCanvas.classList.add(s.experienceEnhanced);
         gsap.set(experiencePresentation, { autoAlpha: 0, scale: 1.035, yPercent: 3, transformOrigin: "50% 50%" });
         gsap.set(experienceStates, { autoAlpha: 0 });
@@ -309,14 +389,20 @@ export default function TomorrowMotion() {
           end: "bottom top",
           onEnter: enterPresentation,
           onEnterBack: () => {
-            if (!complete) enterPresentation();
+            if (!complete && !returningToTop) enterPresentation();
           },
           onLeaveBack: () => {
             complete = false;
+            returningToTop = false;
+            if (locked) unlockPresentation(false, true);
+            clearExperienceState();
+            resetPresentation();
           },
         });
 
         return () => {
+          releaseMobileExperienceForTop = null;
+          clearExperienceState();
           if (locked) unlockPresentation(false);
           window.removeEventListener("wheel", blockPageScroll, true);
           window.removeEventListener("touchmove", blockPageScroll, true);
@@ -325,6 +411,7 @@ export default function TomorrowMotion() {
           exitButton.removeEventListener("click", onExit);
           nextButton.removeEventListener("click", onNext);
           window.removeEventListener("keydown", onKeyDown);
+          window.removeEventListener("scroll", releaseWhenReturningAboveSection);
           experienceCanvas.classList.remove(s.experienceEnhanced, s.experienceMobileActive);
           gsap.set([experienceCanvas, experienceOpening, experienceTitle, experiencePresentation, ...experienceStates, ...experienceVisuals, ...experienceNumbers, ...experienceCopies], { clearProps: "all" });
         };
@@ -429,6 +516,7 @@ export default function TomorrowMotion() {
       context.revert();
       gsap.ticker.remove(syncLenisWithGsap);
       gsap.ticker.lagSmoothing(500, 33);
+      window.removeEventListener("tomorrow:back-to-top", handleBackToTop);
       lenis.destroy();
       root.classList.remove(s.tomorrowNoScrollbar);
     };

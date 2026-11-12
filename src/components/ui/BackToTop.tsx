@@ -21,6 +21,9 @@ export default function BackToTop() {
       aria-hidden={!visible}
       tabIndex={visible ? 0 : -1}
       onClick={() => {
+        const tomorrowEvent = new CustomEvent("tomorrow:back-to-top", { cancelable: true });
+        window.dispatchEvent(tomorrowEvent);
+        if (tomorrowEvent.defaultPrevented) return;
         const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
         window.scrollTo({ top: 0, behavior: reducedMotion ? "auto" : "smooth" });
       }}
