@@ -155,7 +155,7 @@ export default function TomorrowExperience() {
             </button>
             <span className={s.mobileExperienceCount} data-experience-count aria-live="polite">01 <i>/</i> 05</span>
             <button type="button" data-experience-next>
-              <span>NEXT EXPERIENCE</span>
+              <span>NEXT</span>
               <ArrowRight size={16} aria-hidden="true" />
             </button>
           </nav>

@@ -418,16 +418,21 @@
  .experienceEnhanced .experienceCopy p{width:100%;max-width:520px;font-size:clamp(10px,2.9vw,12px);line-height:1.55}
  .experienceEnhanced .experienceVisualNote{max-width:85%;font-size:6px;letter-spacing:.12em}
  .experienceEnhanced .experiencePresentationFooter{display:none}
- .experienceEnhanced .mobileExperienceControls{position:absolute;z-index:5;left:6vw;right:6vw;bottom:max(13px,env(safe-area-inset-bottom));display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center;gap:clamp(6px,2vw,12px);padding-top:12px;border-top:1px solid #1012142b}
- .mobileExperienceControls button{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-width:0;min-height:46px;padding:0 clamp(8px,2.5vw,15px);border:1px solid #969ca1;background:transparent;color:#292e32;font:600 7px var(--font-mono),monospace;letter-spacing:.11em;white-space:nowrap;cursor:pointer;transition:background-color .25s ease,color .25s ease,border-color .25s ease,opacity .25s ease,transform .25s ease}
- .mobileExperienceControls button:first-child{justify-self:start}
- .mobileExperienceControls button:last-child{justify-self:end;border-color:#252a2e;background:#252a2e;color:#f3f4f4}
- .mobileExperienceControls button:first-child:not(:disabled):hover{border-color:#292e32;background:#e4e6e7}
+ .experienceEnhanced .mobileExperienceControls{position:absolute;z-index:5;left:6vw;right:6vw;bottom:max(13px,env(safe-area-inset-bottom));display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center;gap:clamp(6px,2vw,12px);padding:0 0 10px}
+ .experienceEnhanced .mobileExperienceControls::before,.experienceEnhanced .mobileExperienceControls::after{position:absolute;bottom:0;left:0;height:1px;content:""}
+ .experienceEnhanced .mobileExperienceControls::before{right:0;background:#252a2e26}
+ .experienceEnhanced .mobileExperienceControls::after{width:var(--experience-progress,20%);background:#565d62;transition:width .55s cubic-bezier(.2,.75,.25,1)}
+ .mobileExperienceControls button{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-width:0;min-height:46px;padding:0 clamp(8px,2vw,12px);border:0;background:transparent;color:#30363a;font:600 7px var(--font-mono),monospace;letter-spacing:.12em;white-space:nowrap;cursor:pointer;transition:background-color .25s ease,color .25s ease,opacity .25s ease,transform .25s ease}
+ .mobileExperienceControls button:first-child{justify-self:start;padding-left:0}
+ .mobileExperienceControls button:first-child svg{box-sizing:border-box;width:30px;height:30px;padding:7px;border:1px solid #9aa0a4;border-radius:50%;transition:background-color .25s ease,border-color .25s ease,transform .25s ease}
+ .mobileExperienceControls button:last-child{justify-self:end;gap:11px;min-height:44px;padding:0 8px 0 16px;border:1px solid #252a2e;border-radius:999px;background:#252a2e;color:#f1f2f2;box-shadow:0 5px 16px #1113171a}
+ .mobileExperienceControls button:last-child svg{box-sizing:border-box;width:27px;height:27px;padding:6px;border-radius:50%;background:#d8dcde;color:#202529;transition:transform .3s ease,background-color .3s ease}
+ .mobileExperienceControls button:first-child:not(:disabled):hover svg{transform:translateX(-3px);border-color:#353b3f;background:#e1e3e4}
  .mobileExperienceControls button:last-child:not(:disabled):hover{transform:translateY(-2px);background:#111416;border-color:#111416}
+ .mobileExperienceControls button:last-child:not(:disabled):hover svg{transform:translateX(2px);background:#fff}
  .mobileExperienceControls button:focus-visible{outline:2px solid #6c747a;outline-offset:3px}
  .mobileExperienceControls button:disabled{opacity:.32;cursor:default}
- .mobileExperienceControls button svg{flex:none;width:14px;height:14px}
- .mobileExperienceCount{color:#4b5055;font:600 8px var(--font-mono),monospace;letter-spacing:.12em;white-space:nowrap}
+ .mobileExperienceCount{color:#343a3e;font:600 8px var(--font-mono),monospace;letter-spacing:.12em;white-space:nowrap}
  .mobileExperienceCount i{padding:0 3px;color:#a1a5a9;font-style:normal}
  .experienceEnhanced.experienceMobileActive{overflow:hidden}
 }

@@ -247,9 +247,10 @@ export default function TomorrowMotion() {
           count.textContent = `${String(activeIndex + 1).padStart(2, "0")} / 05`;
           exitButton.disabled = activeIndex === 0;
           exitButton.setAttribute("aria-label", activeIndex === 0 ? "No previous experience" : `Show experience ${activeIndex}`);
-          nextButton.querySelector("span")!.textContent = activeIndex === experienceStates.length - 1 ? "CONTINUE" : "NEXT EXPERIENCE";
+          nextButton.querySelector("span")!.textContent = activeIndex === experienceStates.length - 1 ? "CONTINUE" : "NEXT";
           nextButton.setAttribute("aria-label", activeIndex === experienceStates.length - 1 ? "Continue to the next page section" : `Show experience ${activeIndex + 2}`);
           controls.dataset.current = String(activeIndex + 1).padStart(2, "0");
+          controls.style.setProperty("--experience-progress", `${((activeIndex + 1) / experienceStates.length) * 100}%`);
         };
 
         const resetPresentation = () => {
