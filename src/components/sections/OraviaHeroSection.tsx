@@ -1,12 +1,6 @@
 import Image from "next/image";
 import { ArrowRight } from "lucide-react";
 
-// The fixed 3D Africa canvas passes behind this copy on small screens. A halo in the page
-// background colour (#FAFAFA) clears the dots only around each letter, keeping the text
-// legible while the 3D stays visible. Over plain background it is invisible.
-const legibleOverCanvas =
-  "[text-shadow:0_0_1px_#FAFAFA,0_0_4px_#FAFAFA,0_0_8px_#FAFAFA,0_0_14px_#FAFAFA,0_0_22px_#FAFAFA]";
-
 export default function OraviaHeroSection() {
   const initiatives = [
     {
@@ -49,14 +43,14 @@ export default function OraviaHeroSection() {
             
 
             {/* Giant Title */}
-            <h1 className={`font-sans text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-semibold tracking-tighter text-[#111111] leading-[1.02] sm:leading-[0.95] ${legibleOverCanvas}`}>
+            <h1 className="font-sans text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-semibold tracking-tighter text-[#111111] leading-[1.02] sm:leading-[0.95]">
               African Reality.
               <br />
               <span className="text-[#666666]">Engineered.</span>
             </h1>
 
             {/* Description */}
-            <p className={`max-w-lg font-sans text-sm sm:text-base text-[#666666] leading-relaxed ${legibleOverCanvas}`}>
+            <p className="max-w-lg font-sans text-sm sm:text-base text-[#666666] leading-relaxed">
               The foundational technology and digital talent layer for Africa’s next decade.
               Engineering fintech rails, democratizing high-income digital skills, and uniting
               regional ecosystems, designed specifically for how Africa actually works.

@@ -1,6 +1,6 @@
 # ShoutOut Route: Implementation Plan
 
-Status: **Awaiting approval.** No code will be written until this plan is approved and the open questions in section 2 are answered (or the recommended defaults are accepted).
+Status: **Approved and implemented** (2026-11-24) with the recommended defaults. See [SHOUTOUT-PROGRESS.md](SHOUTOUT-PROGRESS.md) for what was built, including later changes to the motion design.
 
 ## 1. Goal
 

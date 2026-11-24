@@ -3,8 +3,10 @@ import { contact } from "@/data/shoutout";
 
 type Tone = "light" | "dark";
 
+// whitespace-nowrap keeps each label on one line; px-6 leaves room for the "Soon" badge
+// inside the closing panels on 360px phones.
 const base =
-  "inline-flex h-[52px] items-center justify-center gap-2 rounded-full px-7 text-[16px] font-medium tracking-[-0.01em] transition-[background-color,scale] duration-200 sm:h-12 sm:text-[15px]";
+  "inline-flex h-[52px] shrink-0 items-center justify-center gap-2 rounded-full px-6 text-[16px] font-medium tracking-[-0.01em] whitespace-nowrap transition-[background-color,scale] duration-200 sm:h-12 sm:text-[15px]";
 const pressable = "active:scale-[0.97]";
 const tones: Record<Tone, string> = {
   light: "bg-white text-black hover:bg-[#e8e8ed]",
@@ -27,7 +29,7 @@ export default function ShoutOutButton({ href, label, tone }: ShoutOutButtonProp
     return (
       <span aria-disabled="true" className={`${base} ${disabled} cursor-not-allowed pr-3`}>
         {label}
-        <span className={`rounded-full px-2.5 py-1 text-[11px] font-semibold tracking-[0.02em] ${badge}`}>
+        <span className={`rounded-full px-2 py-1 text-[11px] font-semibold tracking-[0.02em] ${badge}`}>
           <span className="sr-only">, opening </span>Soon
         </span>
       </span>
