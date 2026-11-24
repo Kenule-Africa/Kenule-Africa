@@ -5,14 +5,13 @@ import s from "./tomorrow.module.css";
 
 type FormState = "idle" | "loading" | "success" | "duplicate" | "error";
 
-export default function Cta({ label, prominent = false }: { label: string; prominent?: boolean }) {
+export default function Cta({ label }: { label: string }) {
   const dialog = useRef<HTMLDialogElement>(null);
   const [email, setEmail] = useState("");
   const [website, setWebsite] = useState("");
   const [state, setState] = useState<FormState>("idle");
   const [message, setMessage] = useState("");
   const [submitting, setSubmitting] = useState(false);
-  const cls = s.cta + (prominent ? " " + s.prominent : "");
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -63,7 +62,7 @@ export default function Cta({ label, prominent = false }: { label: string; promi
 
   return (
     <>
-      <button type="button" className={cls} onClick={openDialog}>
+      <button type="button" className={s.cta} onClick={openDialog}>
         <span>{label}</span>
         <span className={s.ctaIcon}><ArrowUpRight size={16} aria-hidden="true" /></span>
       </button>

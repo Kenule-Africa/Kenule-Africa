@@ -63,8 +63,8 @@ Image delivery update (2026-11-11)
 
 - Removed the Tomorrow top navbar entirely so the brand mark embedded in the hero art can breathe; footer identity remains.
 - Art-directed hero imagery by viewport: cinematic desktop Africa horizon and supplied portrait mobile artwork, with the mobile hero fixed to 100svh and legible overlaid copy.
-- Rebuilt “An Evening of Possibilities” as a large, editorial image stage with expressive headline, supporting invitation, and a clear transition into the five experience cards.
-- Added responsive desktop and mobile closing artwork for “Tomorrow Begins Today.”
+- Rebuilt ï¿½An Evening of Possibilitiesï¿½ as a large, editorial image stage with expressive headline, supporting invitation, and a clear transition into the five experience cards.
+- Added responsive desktop and mobile closing artwork for ï¿½Tomorrow Begins Today.ï¿½
 - TypeScript passed. Lint is still running; browser viewport inspection is unavailable in this environment.
 
 ## Footer and global back-to-top update (2026-11-11)
@@ -77,7 +77,7 @@ Image delivery update (2026-11-11)
 ## Hero scroll prompt update (2026-11-11)
 
 - Removed the hero waitlist button while retaining waitlist CTAs in the later page sections.
-- Made “Scroll to discover” the hero action, linked to the first content section, and updated the bottom cue to reinforce the next step.
+- Made ï¿½Scroll to discoverï¿½ the hero action, linked to the first content section, and updated the bottom cue to reinforce the next step.
 
 ## Previous experience layouts (superseded)
 

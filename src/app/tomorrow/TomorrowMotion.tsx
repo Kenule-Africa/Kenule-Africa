@@ -28,11 +28,9 @@ export default function TomorrowMotion() {
     gsap.registerPlugin(ScrollTrigger);
     const media = gsap.matchMedia(page);
     const experienceLockKey = "tomorrow-experience-scroll-state";
-    const experienceEntryKey = "tomorrow-experience-entry-state";
-    const saveExperienceState = (lockState: string, entryState: string) => {
+    const saveExperienceState = (lockState: string) => {
       try {
         window.localStorage.setItem(experienceLockKey, lockState);
-        window.localStorage.setItem(experienceEntryKey, entryState);
       } catch {
         // Keep the interaction functional when browser storage is unavailable.
       }
@@ -40,7 +38,6 @@ export default function TomorrowMotion() {
     const clearExperienceState = () => {
       try {
         window.localStorage.removeItem(experienceLockKey);
-        window.localStorage.removeItem(experienceEntryKey);
       } catch {
         // Keep the interaction functional when browser storage is unavailable.
       }
@@ -53,7 +50,7 @@ export default function TomorrowMotion() {
         "",
         `${window.location.pathname}${window.location.search}`,
       );
-      saveExperienceState("returning-to-top", "opening");
+      saveExperienceState("returning-to-top");
       releaseMobileExperienceForTop?.();
       lenis.start();
       lenis.scrollTo(0, { duration: 1.25, easing: (value) => Math.min(1, 1.001 - 2 ** (-10 * value)) });
@@ -271,7 +268,7 @@ export default function TomorrowMotion() {
           returningToTop = false;
           clearExperienceState();
           locked = true;
-          saveExperienceState("locked", "active");
+          saveExperienceState("locked");
           activeIndex = 0;
           lenis.stop();
           window.addEventListener("wheel", blockPageScroll, { passive: false, capture: true });
@@ -300,10 +297,7 @@ export default function TomorrowMotion() {
           if (!locked) return;
           locked = false;
           complete = continueForward;
-          saveExperienceState(
-            preserveScrollPosition && returningToTop ? "returning-to-top" : "released",
-            continueForward ? "completed" : "opening",
-          );
+          saveExperienceState(preserveScrollPosition && returningToTop ? "returning-to-top" : "released");
           transition?.kill();
           experienceCanvas.classList.remove(s.experienceMobileActive);
           window.removeEventListener("wheel", blockPageScroll, true);
@@ -322,7 +316,7 @@ export default function TomorrowMotion() {
           returningToTop = true;
           if (locked) unlockPresentation(false, true);
           complete = false;
-          saveExperienceState("returning-to-top", "opening");
+          saveExperienceState("returning-to-top");
           resetPresentation();
         };
 
@@ -331,7 +325,7 @@ export default function TomorrowMotion() {
           const sectionTop = experienceSection.getBoundingClientRect().top + window.scrollY;
           if (window.scrollY >= sectionTop - 8) return;
           returningToTop = true;
-          saveExperienceState("returning-to-top", "opening");
+          saveExperienceState("returning-to-top");
           unlockPresentation(false, true);
           complete = false;
           resetPresentation();
@@ -439,12 +433,6 @@ export default function TomorrowMotion() {
           scrollTrigger: { trigger: element, start: "top 88%", once: true },
         });
       });
-      gsap.utils.toArray<HTMLElement>("[data-reveal-image]").forEach((element) => {
-        gsap.fromTo(element, { clipPath: "inset(0 0 100% 0)", scale: 1.07 }, {
-          clipPath: "inset(0 0 0% 0)", scale: 1, duration: 1.15, ease: "power3.inOut",
-          scrollTrigger: { trigger: element, start: "top 88%", once: true },
-        });
-      });
       media.add("(min-width: 721px)", () => {
         const hero = page.querySelector<HTMLElement>("[data-tomorrow-hero]");
         const heroVisual = hero?.querySelector<HTMLElement>("[data-hero-visual]");
@@ -489,26 +477,12 @@ export default function TomorrowMotion() {
             scrollTrigger: { trigger: image.parentElement, start: "top bottom", end: "bottom top", scrub: 1 },
           });
         });
-        gsap.utils.toArray<HTMLElement>("[data-future-art]").forEach((art, index) => {
-          const direction = index % 2 === 0 ? 1 : -1;
-          gsap.fromTo(art, { yPercent: -direction * 12, xPercent: -direction * 2, scale: 1.12 }, {
-            yPercent: direction * 12, xPercent: direction * 2, scale: 1.2, ease: "none",
-            scrollTrigger: { trigger: art.closest("[data-future-card]"), start: "top bottom", end: "bottom top", scrub: 0.8 },
-          });
-        });
         return removePointerEffect;
       });
       media.add("(max-width: 720px)", () => {
         gsap.to("[data-hero-parallax] img", {
           yPercent: 8, scale: 1.1, ease: "none",
           scrollTrigger: { trigger: "[data-tomorrow-hero]", start: "top top", end: "bottom top", scrub: 0.8 },
-        });
-        gsap.utils.toArray<HTMLElement>("[data-future-art]").forEach((art, index) => {
-          const direction = index % 2 === 0 ? 1 : -1;
-          gsap.fromTo(art, { yPercent: -direction * 6, scale: 1.1 }, {
-            yPercent: direction * 6, scale: 1.15, ease: "none",
-            scrollTrigger: { trigger: art.closest("[data-future-card]"), start: "top bottom", end: "bottom top", scrub: 0.7 },
-          });
         });
       });
     }, page);

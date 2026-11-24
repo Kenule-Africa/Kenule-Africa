@@ -288,6 +288,7 @@ export default function TomorrowPage() {
               <span>EXPLORE</span>
               <Link href="/">Kenule Africa</Link>
               <Link href="/legitlab-academy">LegitLab Academy</Link>
+              <Link href="/shoutout">ShoutOut</Link>
               <Link href="/#ventures">Our ventures</Link>
             </div>
             <div>

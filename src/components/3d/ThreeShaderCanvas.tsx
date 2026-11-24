@@ -475,9 +475,6 @@ export default function ThreeShaderCanvas() {
 
     const handleScroll = () => {
       const scrollY = window.scrollY;
-      africaGroup.rotation.y = -0.32 + scrollY * 0.0003;
-      africaGroup.rotation.x = 0.55 + scrollY * 0.0002;
-
       const w = window.innerWidth;
       const baseY = w < 768 ? 0.5 : (w < 1200 ? 0.8 : 0.6);
       africaGroup.position.y = baseY - scrollY * 0.003;

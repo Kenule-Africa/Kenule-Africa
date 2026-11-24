@@ -156,7 +156,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${syne.variable} ${instrumentSerif.variable} ${inter.variable} ${jetbrainsMono.variable} scroll-smooth dark`}
+      className={`${syne.variable} ${instrumentSerif.variable} ${inter.variable} ${jetbrainsMono.variable} scroll-smooth`}
       suppressHydrationWarning
     >
       <head>
@@ -166,7 +166,7 @@ export default function RootLayout({
         />
       </head>
       <body
-        className="bg-[#010105] text-[#f5f5fc] font-sans antialiased selection:bg-[#f0b90b]/30 selection:text-[#f0b90b] overflow-x-hidden min-h-screen relative"
+        className="font-sans antialiased selection:bg-[#f0b90b]/30 selection:text-[#f0b90b] overflow-x-hidden min-h-screen relative"
         suppressHydrationWarning
       >
         {children}

@@ -84,6 +84,7 @@ export default function OraviaHeader() {
           <nav className="hidden xl:flex items-center gap-6">
             <Link href="/legitlab-academy" className="text-xs font-medium text-[#666666] hover:text-[#111111]">LegitLab Academy</Link>
             <Link href="/tomorrow" className="text-xs font-medium text-[#666666] transition-colors hover:text-[#111111]">Tomorrow</Link>
+            <Link href="/shoutout" className="text-xs font-medium text-[#666666] transition-colors hover:text-[#111111]">ShoutOut</Link>
             <div
               ref={exploreMenu}
               className="relative"
@@ -218,6 +219,14 @@ export default function OraviaHeader() {
               className="py-3.5 px-2 flex items-center justify-between text-[#111111] hover:text-black font-semibold text-lg"
             >
               <span>Tomorrow</span>
+              <ArrowRight className="w-4 h-4 text-[#888888]" />
+            </a>
+            <a
+              href="/shoutout"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="py-3.5 px-2 flex items-center justify-between text-[#111111] hover:text-black font-semibold text-lg"
+            >
+              <span>ShoutOut</span>
               <ArrowRight className="w-4 h-4 text-[#888888]" />
             </a>
             <a

@@ -54,6 +54,11 @@ export default function OraviaFooter() {
                 </a>
               </li>
               <li>
+                <a href="/shoutout" className="hover:text-[#111111] transition-colors">
+                  ShoutOut
+                </a>
+              </li>
+              <li>
                 <a href="#ventures" className="hover:text-[#111111] transition-colors">
                   Jos Tech Expo
                 </a>
