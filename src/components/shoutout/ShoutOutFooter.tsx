@@ -5,14 +5,15 @@ import { contact, kenuleLinks, sectionLinks, socialLinks } from "@/data/shoutout
 import s from "./shoutout.module.css";
 
 const heading = "text-[13px] font-semibold text-white";
-const item = "text-[14px] text-(--so-muted-dark) transition-colors hover:text-white";
+// py-1.5 keeps each link a comfortable tap target on phones.
+const item = "inline-flex items-center gap-1 py-1.5 text-[15px] text-(--so-muted-dark) transition-colors hover:text-white sm:text-[14px]";
 
 export default function ShoutOutFooter() {
   return (
     <footer id="contact" className={`${s.dark} scroll-mt-14 bg-black text-white`}>
-      <div className="mx-auto max-w-[1120px] px-6 pt-20 pb-10 sm:px-8">
+      <div className="mx-auto max-w-[1120px] px-6 pt-20 pb-[max(40px,env(safe-area-inset-bottom))] sm:px-8">
         <div className="grid grid-cols-2 gap-x-8 gap-y-12 lg:grid-cols-[1.4fr_1fr_1fr_1.2fr]">
-          <div className="col-span-2 lg:col-span-1">
+          <div data-so-reveal className="col-span-2 lg:col-span-1">
             <Image
               src="/assets/shoutout/shoutout-logo-white.png"
               alt="ShoutOut"
@@ -26,9 +27,9 @@ export default function ShoutOutFooter() {
             </p>
           </div>
 
-          <nav aria-label="ShoutOut">
+          <nav data-so-reveal aria-label="ShoutOut">
             <h3 className={heading}>ShoutOut</h3>
-            <ul className="mt-5 space-y-3">
+            <ul className="mt-4 space-y-1.5">
               {sectionLinks
                 .filter((link) => link.href !== "#contact")
                 .map((link) => (
@@ -41,9 +42,9 @@ export default function ShoutOutFooter() {
             </ul>
           </nav>
 
-          <nav aria-label="Kenule Africa">
+          <nav data-so-reveal aria-label="Kenule Africa">
             <h3 className={heading}>Kenule Africa</h3>
-            <ul className="mt-5 space-y-3">
+            <ul className="mt-4 space-y-1.5">
               {kenuleLinks.map((link) => (
                 <li key={link.href}>
                   <Link className={item} href={link.href}>
@@ -54,22 +55,22 @@ export default function ShoutOutFooter() {
             </ul>
           </nav>
 
-          <div className="col-span-2 lg:col-span-1">
+          <div data-so-reveal className="col-span-2 lg:col-span-1">
             <h3 className={heading}>Contact</h3>
-            <ul className="mt-5 space-y-3">
+            <ul className="mt-4 space-y-1.5">
               <li>
                 <a className={item} href={`mailto:${contact.email}`}>
                   {contact.email}
                 </a>
               </li>
               <li>
-                <a className={`${item} inline-flex items-center gap-1`} href={contact.whatsappUrl} target="_blank" rel="noopener noreferrer">
+                <a className={item} href={contact.whatsappUrl} target="_blank" rel="noopener noreferrer">
                   WhatsApp {contact.whatsappLabel} <ArrowUpRight size={13} aria-hidden="true" />
                 </a>
               </li>
               {socialLinks.map((link) => (
                 <li key={link.href}>
-                  <a className={`${item} inline-flex items-center gap-1`} href={link.href} target="_blank" rel="noopener noreferrer">
+                  <a className={item} href={link.href} target="_blank" rel="noopener noreferrer">
                     {link.label} <ArrowUpRight size={13} aria-hidden="true" />
                   </a>
                 </li>

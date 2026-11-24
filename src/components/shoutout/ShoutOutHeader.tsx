@@ -65,7 +65,7 @@ export default function ShoutOutHeader() {
 
         <nav aria-label="ShoutOut sections" className="hidden items-center gap-8 md:flex">
           {sectionLinks.map((link) => (
-            <a key={link.href} href={link.href} className="text-[13px] text-white/70 transition-colors hover:text-white">
+            <a key={link.href} href={link.href} data-so-nav={link.href} className={`${s.navLink} text-[13px] text-white/70 hover:text-white`}>
               {link.label}
             </a>
           ))}
@@ -96,22 +96,25 @@ export default function ShoutOutHeader() {
         <nav
           id="shoutout-mobile-nav"
           aria-label="ShoutOut sections"
-          className="fixed inset-x-0 top-14 bottom-0 flex flex-col overflow-y-auto bg-black px-6 pt-4 pb-10 md:hidden"
+          className={`${s.menuSheet} fixed inset-x-0 top-14 bottom-0 flex flex-col overflow-y-auto bg-black px-6 pt-4 pb-[max(40px,env(safe-area-inset-bottom))] md:hidden`}
         >
-          {sectionLinks.map((link) => (
+          {sectionLinks.map((link, index) => (
             <a
               key={link.href}
               href={link.href}
               onClick={() => setOpen(false)}
-              className="border-b border-(--so-hairline-dark) py-5 text-[28px] font-semibold tracking-[-0.03em] text-white"
+              style={{ animationDelay: `${60 + index * 55}ms` }}
+              className={`${s.menuItem} flex items-center justify-between border-b border-(--so-hairline-dark) py-5 text-[30px] font-semibold tracking-[-0.03em] text-white active:text-white/60`}
             >
               {link.label}
+              <span className="text-[13px] font-medium text-(--so-muted-dark) tabular-nums">{String(index + 1).padStart(2, "0")}</span>
             </a>
           ))}
           <Link
             href="/"
             onClick={() => setOpen(false)}
-            className="mt-auto inline-flex items-center gap-1.5 pt-10 text-[15px] text-(--so-muted-dark)"
+            style={{ animationDelay: `${60 + sectionLinks.length * 55}ms` }}
+            className={`${s.menuItem} mt-auto inline-flex items-center gap-1.5 pt-10 text-[15px] text-(--so-muted-dark)`}
           >
             Back to Kenule Africa <ArrowUpRight size={16} aria-hidden="true" />
           </Link>

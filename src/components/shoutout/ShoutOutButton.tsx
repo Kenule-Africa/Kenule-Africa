@@ -4,7 +4,8 @@ import { contact } from "@/data/shoutout";
 type Tone = "light" | "dark";
 
 const base =
-  "inline-flex h-12 items-center justify-center gap-2 rounded-full px-7 text-[15px] font-medium tracking-[-0.01em] transition-colors duration-200";
+  "inline-flex h-[52px] items-center justify-center gap-2 rounded-full px-7 text-[16px] font-medium tracking-[-0.01em] transition-[background-color,scale] duration-200 sm:h-12 sm:text-[15px]";
+const pressable = "active:scale-[0.97]";
 const tones: Record<Tone, string> = {
   light: "bg-white text-black hover:bg-[#e8e8ed]",
   dark: "bg-black text-white hover:bg-[#2c2c2e]",
@@ -37,7 +38,7 @@ export default function ShoutOutButton({ href, label, tone }: ShoutOutButtonProp
   return (
     <a
       href={href}
-      className={`${base} ${tones[tone]}`}
+      className={`${base} ${tones[tone]} ${pressable}`}
       target={external ? "_blank" : undefined}
       rel={external ? "noopener noreferrer" : undefined}
     >

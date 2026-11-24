@@ -12,12 +12,14 @@
   --so-silver: #acacac;
   --so-hairline: #d2d2d7;
   --so-hairline-dark: #2c2c2e;
+  --so-ease: cubic-bezier(0.2, 0.7, 0.2, 1);
 
   background: var(--so-paper);
   color: var(--so-ink);
   font-family: var(--font-sans), -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  -webkit-tap-highlight-color: transparent;
   overflow-x: clip;
 }
 
@@ -35,15 +37,48 @@
   outline-color: #ffffff;
 }
 
-/* The logo's silver "Out", applied to the second half of dark-section headlines. */
+/* Before hydration, an inline script marks <html> so the hero intro can start hidden
+   without a flash. If scripts never run, the failsafe reveals everything after 3s. */
+:global(html.so-intro) .page [data-so-intro] {
+  opacity: 0;
+  animation: so-failsafe 0.01s 3s forwards;
+}
+
+@keyframes so-failsafe {
+  to {
+    opacity: 1;
+  }
+}
+
+/* Silver: the logo's "Out". A second, transparent layer carries a highlight band that
+   sweeps across the letters like light catching chrome. */
 .silver {
-  background: linear-gradient(100deg, #ffffff 0%, #d1d1d6 38%, #acacac 72%, #8e8e93 100%);
+  background-image:
+    linear-gradient(110deg, transparent 38%, rgba(255, 255, 255, 0.95) 50%, transparent 62%),
+    linear-gradient(100deg, #ffffff 0%, #d1d1d6 38%, #acacac 72%, #8e8e93 100%);
+  background-size: 250% 100%, 100% 100%;
+  background-position: 110% 0, 0 0;
+  background-repeat: no-repeat;
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
   padding-bottom: 0.08em;
 }
 
+.sheenOnce {
+  animation: so-sheen 1.7s var(--so-ease) both;
+}
+
+@keyframes so-sheen {
+  from {
+    background-position: 110% 0, 0 0;
+  }
+  to {
+    background-position: -10% 0, 0 0;
+  }
+}
+
+/* Hero atmosphere */
 .heroGlow {
   position: absolute;
   inset: 0;
@@ -61,13 +96,41 @@
   z-index: -1;
   width: min(1500px, 190vw);
   aspect-ratio: 1;
-  transform: translate(-50%, -50%);
+  translate: -50% -50%;
   pointer-events: none;
   mask-image: radial-gradient(closest-side, #000 30%, transparent 100%);
   -webkit-mask-image: radial-gradient(closest-side, #000 30%, transparent 100%);
 }
 
-.markWatermark {
+.spotlight {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.6s ease;
+  background: radial-gradient(560px circle at var(--sx, 50%) var(--sy, 40%), rgba(255, 255, 255, 0.075), transparent 65%);
+}
+
+.spotlight[data-active] {
+  opacity: 1;
+}
+
+.markFlash {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: -1;
+  width: 220px;
+  height: 220px;
+  margin: -110px 0 0 -110px;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(255, 255, 255, 0.35), transparent);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.watermark {
   position: absolute;
   right: -6%;
   bottom: -18%;
@@ -78,17 +141,135 @@
   pointer-events: none;
 }
 
-/* Reveal: content is visible by default (no JavaScript, reduced motion, already on
-   screen). The Reveal component only hides blocks that start below the fold. */
-.reveal {
-  transition:
-    opacity 0.9s cubic-bezier(0.2, 0.7, 0.2, 1),
-    transform 0.9s cubic-bezier(0.2, 0.7, 0.2, 1);
+/* Mobile pillars marquee: two identical groups translate by -50% for a seamless loop. */
+.marquee {
+  width: 100%;
+  overflow: hidden;
+  mask-image: linear-gradient(90deg, transparent, #000 14%, #000 86%, transparent);
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 14%, #000 86%, transparent);
 }
 
-.reveal[data-reveal="pending"] {
+.marqueeTrack {
+  display: flex;
+  width: max-content;
+  animation: so-marquee 20s linear infinite;
+}
+
+.marqueeGroup {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 22px;
+  padding-right: 22px;
+}
+
+@keyframes so-marquee {
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+/* Header section links: the current section gets a small marker. */
+.navLink {
+  position: relative;
+  transition: color 0.25s ease;
+}
+
+.navLink::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -10px;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #ffffff;
+  transform: translateX(-50%) scale(0);
+  transition: transform 0.3s var(--so-ease);
+}
+
+.navLink[data-active] {
+  color: #ffffff;
+}
+
+.navLink[data-active]::after {
+  transform: translateX(-50%) scale(1);
+}
+
+.menuSheet {
+  animation: so-fade-in 0.3s ease both;
+}
+
+.menuItem {
+  animation: so-rise-in 0.55s var(--so-ease) both;
+}
+
+@keyframes so-fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes so-rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+}
+
+/* Service cards: hover lift with a soft light that follows the pointer. GSAP animates
+   the wrapper, so these transforms never fight inline styles. */
+.card {
+  position: relative;
+  isolation: isolate;
+  transition:
+    transform 0.5s var(--so-ease),
+    box-shadow 0.5s var(--so-ease);
+}
+
+.card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
   opacity: 0;
-  transform: translateY(28px);
+  transition: opacity 0.4s ease;
+  background: radial-gradient(420px circle at var(--mx, 50%) var(--my, 50%), rgba(0, 0, 0, 0.05), transparent 62%);
+}
+
+.cardIcon {
+  transition:
+    transform 0.5s var(--so-ease),
+    background-color 0.3s ease,
+    color 0.3s ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 30px 60px -34px rgba(0, 0, 0, 0.28);
+  }
+
+  .card:hover::before {
+    opacity: 1;
+  }
+
+  .card:hover .cardIcon {
+    transform: rotate(-8deg) scale(1.08);
+  }
+}
+
+.step {
+  transition: background-color 0.5s ease;
+}
+
+.stepNumber {
+  transition: color 0.5s ease;
+}
+
+.stepActive .stepNumber {
+  color: var(--so-ink);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -96,7 +277,31 @@
     scroll-behavior: auto;
   }
 
-  .reveal {
-    transition: none;
+  .sheenOnce,
+  .menuSheet,
+  .menuItem {
+    animation: none;
+  }
+
+  .marquee {
+    mask-image: none;
+    -webkit-mask-image: none;
+  }
+
+  .marqueeTrack {
+    width: auto;
+    flex-wrap: wrap;
+    justify-content: center;
+    animation: none;
+  }
+
+  .marqueeGroup {
+    flex-wrap: wrap;
+    justify-content: center;
+    padding-right: 0;
+  }
+
+  .marqueeGroup[aria-hidden] {
+    display: none;
   }
 }

@@ -7,7 +7,14 @@ import Hero from "@/components/shoutout/Hero";
 import Services from "@/components/shoutout/Services";
 import ShoutOutFooter from "@/components/shoutout/ShoutOutFooter";
 import ShoutOutHeader from "@/components/shoutout/ShoutOutHeader";
+import ShoutOutMotion from "@/components/shoutout/ShoutOutMotion";
 import s from "@/components/shoutout/shoutout.module.css";
+
+// Runs during HTML parsing, before the hero paints, so the reveal starts from a clean
+// slate instead of flashing the finished hero first. ShoutOutMotion removes the class;
+// a CSS failsafe reveals everything if scripts never run.
+const introScript =
+  "try{if(!matchMedia('(prefers-reduced-motion: reduce)').matches)document.documentElement.classList.add('so-intro')}catch(e){}";
 
 const title = "ShoutOut | A Kenule Africa Company";
 const description =
@@ -39,6 +46,8 @@ export const metadata: Metadata = {
 export default function ShoutOutPage() {
   return (
     <div id="top" className={s.page}>
+      <script dangerouslySetInnerHTML={{ __html: introScript }} />
+      <ShoutOutMotion />
       <a
         href="#main"
         className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[60] focus:rounded-full focus:bg-white focus:px-5 focus:py-3 focus:text-[14px] focus:text-black"
